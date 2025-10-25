@@ -2,11 +2,13 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 using static UnityEditor.PlayerSettings;
 
 public class CrosshairMovement : MonoBehaviour
 {
-    public float moveSpeed = 3f;
+    public float maxMoveSpeed = 1f;
+    private float moveSpeed = 3f;
     public float maxDistance = 200f;
     private float timer = 0f;
     private float intervalTimer = 0f;
@@ -23,9 +25,11 @@ public class CrosshairMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        AdjustMoveSpeed();
+
         PlayerInput();
         FloatCursorTowardsRandomTarget();
-        //CrosshairIsOverOpponent();
+        CrosshairIsOverOpponent();
         //FigureEight(80f);
         //RandomForce(30f);
 
@@ -45,6 +49,14 @@ public class CrosshairMovement : MonoBehaviour
         }
     }
 
+    void AdjustMoveSpeed() 
+    {
+        float distancePercent = Vector3.Distance(centerPosition, transform.position) / maxDistance;
+
+        moveSpeed = Math.Max(maxMoveSpeed * distancePercent, maxMoveSpeed / 2);
+        Debug.Log($"Speed: {moveSpeed} ({distancePercent}%)");
+    }
+
     void FloatCursorTowardsRandomTarget() 
     {
         //Debug.Log($"Moving towards X: {floatTowardsPosition.x} - Y: {floatTowardsPosition.y}");
@@ -53,7 +65,7 @@ public class CrosshairMovement : MonoBehaviour
 
     void SetRandomTarget() 
     {
-        float angle = Random.Range(0, 8) * 45f * Mathf.Deg2Rad;
+        float angle = UnityEngine.Random.Range(0, 8) * 45f * Mathf.Deg2Rad;
         float xOffset = Mathf.Cos(angle) * maxDistance;
         float yOffset = Mathf.Sin(angle) * maxDistance;
 
@@ -62,8 +74,8 @@ public class CrosshairMovement : MonoBehaviour
 
     void RandomForce(float intensity) 
     {
-        float x = Random.Range(-1f, 1f);
-        float y = Random.Range(-1, 1f);
+        float x = UnityEngine.Random.Range(-1f, 1f);
+        float y = UnityEngine.Random.Range(-1, 1f);
 
         transform.Translate(new Vector3(x * intensity, y * intensity));
 
@@ -94,7 +106,7 @@ public class CrosshairMovement : MonoBehaviour
     public bool CrosshairIsOverOpponent() 
     {
         Ray ray = Camera.main.ScreenPointToRay(transform.position);
-        //Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
+        Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
 
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
         if (hit.collider != null)

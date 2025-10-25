@@ -4,7 +4,10 @@ using UnityEngine.UI;
 
 public class MinigameManager : MonoBehaviour
 {
-    public bool gameStarted = true;
+    private bool gameBeginning = false;
+    private float fadeInOpacity = 0f;
+    public float fadeInSpeed = 0.001f;
+    public bool gameStarted = false;
     public bool canShoot = false;
     private bool opponentShot = false;
     private bool playerShot = false;
@@ -30,38 +33,74 @@ public class MinigameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        shootTimer += Time.deltaTime;
+        if (gameStarted)
+        {
+            shootTimer += Time.deltaTime;
 
-        if (shootTimer > shootTimeLimit && !canShoot) 
-        {
-            TimeLimitReached();
-        }
-        else if (shootTimer > shootTimeLimit && canShoot)
-        {
-            if (Input.GetKeyDown(KeyCode.Space)) 
+            if (shootTimer > shootTimeLimit && !canShoot)
             {
-                if (crosshair.GetComponent<CrosshairMovement>().CrosshairIsOverOpponent()) 
+                TimeLimitReached();
+            }
+            else if (shootTimer > shootTimeLimit && canShoot)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    opponentShot = true;
-                    playerWins++;
-                    UpdateWinUI();
-                    shootPromptSFX.Play();
-                    ResetMinigame();
+                    if (crosshair.GetComponent<CrosshairMovement>().CrosshairIsOverOpponent())
+                    {
+                        opponentShot = true;
+                        playerWins++;
+                        UpdateWinUI();
+                        shootPromptSFX.Play();
+                        ResetMinigame();
+                    }
                 }
             }
+
+            float realOpponentTimer = opponentShootTime * Mathf.Min(1 + (opponentWins * 0.15f), 1.5f);
+
+            if (shootTimer > shootTimeLimit + realOpponentTimer && !opponentShot)
+            {
+                canShoot = false;
+                playerShot = true;
+                opponentWins++;
+                UpdateWinUI();
+                shootPromptSFX.Play();
+                ResetMinigame();
+            }
         }
-
-        float realOpponentTimer = opponentShootTime * Mathf.Min(1 + (opponentWins * 0.15f), 1.5f);
-
-        if (shootTimer > shootTimeLimit + realOpponentTimer && !opponentShot) 
+        else if (gameBeginning) 
         {
-            canShoot = false;
-            playerShot = true;
-            opponentWins++;
-            UpdateWinUI();
-            shootPromptSFX.Play();
-            ResetMinigame();
+            MinigameFadeIn();
         }
+    }
+
+    public void StartMinigame() 
+    {
+        gameBeginning = true;
+        crosshair.SetActive(true);
+        playerWinText.gameObject.SetActive(true);
+        opponentWinText.gameObject.SetActive(true);
+    }
+
+    void MinigameFadeIn() 
+    {
+        fadeInOpacity += fadeInSpeed;
+
+        Color crosshairColor = crosshair.gameObject.GetComponent<Image>().color;
+        crosshairColor.a = fadeInOpacity;
+        crosshair.gameObject.GetComponent<Image>().color = crosshairColor;
+
+        Color textColor = playerWinText.color;
+        textColor.a = fadeInOpacity;
+        playerWinText.color = textColor;
+        opponentWinText.color = textColor;
+
+        if (fadeInOpacity >= 1f) 
+        {
+            gameBeginning = false;
+            gameStarted = true;
+        }
+
     }
 
     void UpdateWinUI() 
