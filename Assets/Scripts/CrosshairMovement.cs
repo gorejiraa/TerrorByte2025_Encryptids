@@ -1,24 +1,40 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.PlayerSettings;
 
 public class CrosshairMovement : MonoBehaviour
 {
-    public float moveSpeed = 0.1f;
+    public float moveSpeed = 3f;
+    public float maxDistance = 200f;
     private float timer = 0f;
+    private float intervalTimer = 0f;
+    public float interval = 3f;
     private Vector3 centerPosition;
+    private Vector3 floatTowardsPosition;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         centerPosition = transform.position;
+        SetRandomTarget();
     }
 
     // Update is called once per frame
     void Update()
     {
         PlayerInput();
+        FloatCursorTowardsRandomTarget();
         //CrosshairIsOverOpponent();
-        FigureEight(80f);
+        //FigureEight(80f);
+        //RandomForce(30f);
+
+        intervalTimer += Time.deltaTime;
+        while (intervalTimer >= interval)
+        {
+            SetRandomTarget();
+            intervalTimer -= interval;
+        }
 
         if (Input.GetKeyDown(KeyCode.Space)) 
         {
@@ -26,6 +42,34 @@ public class CrosshairMovement : MonoBehaviour
             {
                 Debug.Log("YOU SHOT HIM!");
             }
+        }
+    }
+
+    void FloatCursorTowardsRandomTarget() 
+    {
+        //Debug.Log($"Moving towards X: {floatTowardsPosition.x} - Y: {floatTowardsPosition.y}");
+        transform.position = Vector3.MoveTowards(transform.position, floatTowardsPosition, moveSpeed*0.5f);
+    }
+
+    void SetRandomTarget() 
+    {
+        float angle = Random.Range(0, 8) * 45f * Mathf.Deg2Rad;
+        float xOffset = Mathf.Cos(angle) * maxDistance;
+        float yOffset = Mathf.Sin(angle) * maxDistance;
+
+        floatTowardsPosition = new Vector3(centerPosition.x + xOffset, centerPosition.y + yOffset);
+    }
+
+    void RandomForce(float intensity) 
+    {
+        float x = Random.Range(-1f, 1f);
+        float y = Random.Range(-1, 1f);
+
+        transform.Translate(new Vector3(x * intensity, y * intensity));
+
+        if (Vector3.Distance(centerPosition, transform.position) > maxDistance) 
+        {
+            transform.position = Vector3.MoveTowards(transform.position, centerPosition, intensity);
         }
     }
 
@@ -50,9 +94,8 @@ public class CrosshairMovement : MonoBehaviour
     public bool CrosshairIsOverOpponent() 
     {
         Ray ray = Camera.main.ScreenPointToRay(transform.position);
-        Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
+        //Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
 
-        //RaycastHit hit;
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
         if (hit.collider != null)
         {
@@ -84,6 +127,9 @@ public class CrosshairMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.DownArrow)) yMove -= 1;
         if (Input.GetKey(KeyCode.UpArrow)) yMove += 1;
 
-        transform.Translate(new Vector3(xMove * moveSpeed, yMove * moveSpeed));
+        Vector3 moveDirection = new Vector3(xMove, yMove);
+        moveDirection = moveDirection.normalized * moveSpeed;
+
+        transform.position += moveDirection;
     }
 }
