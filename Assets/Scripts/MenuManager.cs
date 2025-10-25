@@ -20,7 +20,7 @@ public class MenuManager : MonoBehaviour
     void Update()
     {
         if (startGameInit && !gameStarted)
-        { 
+        {
             
             //flashAnimator.Play("MenuLightFlash");
             gameStarted = true;
@@ -37,6 +37,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartGame() 
     {
+        GetComponent<AudioSource>().Play();
         flashPanel.SetActive(true);
         gameStarted = true;
     }
