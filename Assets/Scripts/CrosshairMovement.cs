@@ -15,6 +15,7 @@ public class CrosshairMovement : MonoBehaviour
     public float interval = 3f;
     private Vector3 centerPosition;
     private Vector3 floatTowardsPosition;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
