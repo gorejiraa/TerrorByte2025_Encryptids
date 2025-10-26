@@ -15,10 +15,12 @@ public class CrosshairMovement : MonoBehaviour
     public float interval = 3f;
     private Vector3 centerPosition;
     private Vector3 floatTowardsPosition;
+    public bool randomMovement = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        moveSpeed = maxMoveSpeed;
         centerPosition = transform.position;
         SetRandomTarget();
     }
@@ -26,10 +28,10 @@ public class CrosshairMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        AdjustMoveSpeed();
+        if (randomMovement) AdjustMoveSpeed();
 
         PlayerInput();
-        FloatCursorTowardsRandomTarget();
+        if (randomMovement) FloatCursorTowardsRandomTarget();
         CrosshairIsOverOpponent();
         //FigureEight(80f);
         //RandomForce(30f);

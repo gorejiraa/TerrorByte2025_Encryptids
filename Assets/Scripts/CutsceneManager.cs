@@ -24,18 +24,64 @@ public class CutsceneManager : MonoBehaviour
     private int endOfDialogue;
     private int dialogueTimer = 0;
     public int dialogueSlowness = 5;
+    public int sceneIndex = 0;
 
-    private string[,] dialogue =
+    private string[,] dialogue;
+
+    private string[,] sceneOne =
     {
         {"Right", "Hey you big baddie zombie im gonna kill you"},
-        {"Left", "Nuh uhn"},
+        {"Elias", "Nuh uhn"},
         {"Right", "Yuh huh buddy youre a stinky little bozo and I'm gonna shoot you with my funny gun"},
         {"Left", "Nuh uhn nuh uhn nuh uhn"}
     };
 
+    private string[,] sceneTwo =
+    {
+        {"Right", "Wow it's sonic the hedgehog"},
+        {"Elias", "Hello Mothman skin from the hit video game Fortnite"},
+        {"Right", "I am going to shoot you with my golden fortnite gun. From fortnite"},
+        {"Left", "Chilli dog"}
+    };
+
+    private string[,] sceneThree =
+    {
+        {"Right", "Hey you big baddie zombie im gonna kill you"},
+        {"Elias", "Nuh uhn"},
+        {"Right", "Yuh huh buddy youre a stinky little bozo and I'm gonna shoot you with my funny gun"},
+        {"Left", "Nuh uhn nuh uhn nuh uhn"}
+    };
+
+    private string[,] sceneFour =
+    {
+        {"Right", "Hey you big baddie zombie im gonna kill you"},
+        {"Elias", "Nuh uhn"},
+        {"Right", "Yuh huh buddy youre a stinky little bozo and I'm gonna shoot you with my funny gun"},
+        {"Left", "Nuh uhn nuh uhn nuh uhn"}
+    };
+
+    private string[,] sceneFive =
+    {
+        {"Right", "Hey you big baddie zombie im gonna kill you"},
+        {"Elias", "Nuh uhn"},
+        {"Right", "Yuh huh buddy youre a stinky little bozo and I'm gonna shoot you with my funny gun"},
+        {"Left", "Nuh uhn nuh uhn nuh uhn"}
+    };
+
+    private string[,] sceneTest =
+    {
+        {"Right", "Hey you big baddie zombie im gonna kill you"},
+        {"Elias", "Nuh uhn"},
+        {"Right", "Yuh huh buddy youre a stinky little bozo and I'm gonna shoot you with my funny gun"},
+        {"Left", "Nuh uhn nuh uhn nuh uhn"}
+    };
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        SelectScene();
+
         endOfDialogue = dialogue.GetLength(0) - 1;
     }
 
@@ -113,14 +159,14 @@ public class CutsceneManager : MonoBehaviour
 
         dialogueTextElement.text = dialogueToDisplay;
 
-        if (dialogue[dialogueIndex, 0] == "Left")
+        if (dialogue[dialogueIndex, 0] == "Left" || dialogue[dialogueIndex, 0] == "Elias")
         {
             leftSprite.color = highlightColor;
             rightSprite.color = fadeColor;
             leftSprite.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             rightSprite.gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
-        else if (dialogue[dialogueIndex, 0] == "Right")
+        else if (dialogue[dialogueIndex, 0] == "Right" || dialogue[dialogueIndex, 0] == "Other")
         {
             rightSprite.color = highlightColor;
             leftSprite.color = fadeColor;
@@ -145,6 +191,34 @@ public class CutsceneManager : MonoBehaviour
         else 
         {
             dialogueTyped = true;
+        }
+    }
+
+    void SelectScene() 
+    {
+        if (sceneIndex == 1)
+        {
+            dialogue = sceneOne;
+        }
+        else if (sceneIndex == 2)
+        {
+            dialogue = sceneTwo;
+        }
+        else if (sceneIndex == 3)
+        {
+            dialogue = sceneThree;
+        }
+        else if (sceneIndex == 4)
+        {
+            dialogue = sceneFour;
+        }
+        else if (sceneIndex == 5)
+        {
+            dialogue = sceneFive;
+        }
+        else
+        {
+            dialogue = sceneTest;
         }
     }
 }
