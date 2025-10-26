@@ -62,10 +62,9 @@ public class CutsceneManager : MonoBehaviour
 
     private string[,] sceneFive =
     {
-        {"Right", "Hey you big baddie zombie im gonna kill you"},
-        {"Elias", "Nuh uhn"},
-        {"Right", "Yuh huh buddy youre a stinky little bozo and I'm gonna shoot you with my funny gun"},
-        {"Left", "Nuh uhn nuh uhn nuh uhn"}
+        {"Left", "holy crap its fucking sam robichaud"},
+        {"Right", "I have all the chaos emeralds, Sonic you're so cooked bro"},
+        {"Left", "nahhhhhh bro what"}
     };
 
     private string[,] sceneTest =
