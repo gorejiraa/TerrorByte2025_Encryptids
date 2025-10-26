@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MinigameManager : MonoBehaviour
@@ -118,11 +119,22 @@ public class MinigameManager : MonoBehaviour
 
     void ResetMinigame() 
     {
-        shootTimer = 0f;
-        shootTimeLimit = Random.Range(5f, 10f);
-        canShoot = false;
-        opponentShot = false;
-        playerShot = false;
-        shootPromptUI.gameObject.SetActive(false);
+        if (playerWins < winsRequired && opponentWins < winsRequired)
+        {
+            shootTimer = 0f;
+            shootTimeLimit = Random.Range(5f, 10f);
+            canShoot = false;
+            opponentShot = false;
+            playerShot = false;
+            shootPromptUI.gameObject.SetActive(false);
+        }
+        else if (playerWins >= winsRequired)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else if (opponentWins >= winsRequired) 
+        {
+            SceneManager.LoadScene("GameOver");
+        }
     }
 }
